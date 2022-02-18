@@ -1,66 +1,31 @@
-<!DOCTYPE html>
-<!--
-    Author: Kahin Akram
-    Date: Jan 24, 2020
-    TNM048 Lab 1 - Visual Information-Seeking Mantra
-    Main html file
-TESTAR ATT GÖRA EN ÄNDRING I INDEX-FILEN!
-
--->
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>TNM048 Lab 1, 2019</title>
-        <link rel="stylesheet" href="libs/css/index.css" />
+        <title>TNM048 Project: Freedom</title>
+        
         <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css" />
-    </head>
+        <link href=https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.1/nouislider.min.css rel="stylesheet"  />
+        <link rel="stylesheet" href="libs/css/index.css" />
+        <link rel="stylesheet" href="libs/leaflet/leaflet.css" />
+    <script async src='/cdn-cgi/bm/cv/669835187/api.js'></script></head>
 
     <body class="container-fluid">
-        <div class="card text-center">
-            <div class="card-header">
-                <h2>Visual Information-Seeking Mantra</h2>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-12 col-md-10 col-lg-10 col-xl-10">
-                        <div id="context"></div>
-                        <div id="scatterplot"></div>
-                        <div id="mapid"></div>
-                    </div>
-                    <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                        <div class="row">
-                            <div class="col-12" id="tooltip">
-                                <br>
-                                <h5><strong>Information</strong></h5>
-                                <hr>
-                                <p><span id="date">Date</span></p>
-                                <p><span id="magnitude">Magnitude</span></p>
-                                <p><span id="deaths">Deaths</span></p>
-                                <p><span id="country">Country</span></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12" id="color-info">
-                                <br>
-                                <h5><strong>Color Coding</strong></h5>
-                                <hr>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+     <h1>PROJECT FREEDOM</h1>
+        
+        <div id = "map" style = "width: 900px; height: 580px"></div>
+    <script type="text/javascript">(function(){window['__CF$cv$params']={r:'6ddeaabb7d0f95f0',m:'H8jjraIDFoyOaBbpUSkqa4C8Dbpgtly2_uASMZt5280-1644929478-0-AVoU+0kSmGX9PBp3IjAalFNHpsLtK2prbVfkUBKBS3q3SsCiF01PFWfIEp2Ehwkw4/czduhx7/Rel8XCjJURwEyptkeJOyq8nYmB1aLRI1JyZErmBnSpv6kMWFCxvw5F+zyXY8IvZY3wxNjUmuV2F5qfBM1nege9nJ/zKE0GbwqnB6wbElAv3h3MncX1meweSA==',s:[0x1e367c2782,0xdcaf6c87fa],}})();</script>
+    <div id= "sliderBar"></div>
     </body>
 
+    <script src="libs/leaflet/leaflet.js"></script> 
     <script type=text/javascript src="libs/jquery/jquery.min.js"></script>
     <script type=text/javascript src=libs/bootstrap/js/bootstrap.min.js></script>
     <script type="text/javascript" src="libs/d3/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.1/nouislider.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet-src.js"></script>
-    <!-- our scripts -->
-    <script src="js/color_info.js"></script>
-    <script src="js/plot_points.js"></script>
-    <script src="js/fpc.js"></script>
+  
+
     <script src="js/map.js"></script>
     <script src="js/main.js"></script>
 
