@@ -14,6 +14,7 @@ d3.json("./data/oneYearAgg.json", function (data) {
     d3.json("./data/geoData.geojson", function (geo) {
         
        // world_map = new worldMap(geo, data);
+        
         world_map = new worldMap(geo, data);
         //TESTAR geo
         //console.log(geo.features) 

@@ -47,7 +47,7 @@ function worldMap(geo, data) {
            fillColor: getColor(feature.properties.ADMIN, data),
            weight: 2,
            opacity: 0.5,
-           color: 'white',
+           color: 'black',
            dashArray: '1',
            fillOpacity: 0.7
         };
