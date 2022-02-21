@@ -30,13 +30,13 @@ function worldMap(geo, data) {
       function getColor(country, data) {
          for(var i = 0; i < Object.keys(data).length; ++i) {
             if(data[i].Country == country && data[i].Status == 'PF' ){
-                 return data[i].Country == country ? 'green': '#ff9633';
+                 return data[i].Country == country ? '#ffcc99': '#ff9633';
             }
              else if(data[i].Country == country && data[i].Status == 'NF' ){
-                 return data[i].Country == country ? 'purple': '#ff9633';
+                 return data[i].Country == country ? '#ff4d88': '#ff9633';
              }
              else if(data[i].Country == country && data[i].Status == 'F' )
-                 return data[i].Country == country ? 'yellow': '#ff9633';
+                 return data[i].Country == country ? '#b3ffb3': '#ff9633';
          }
           
       }
@@ -60,7 +60,7 @@ function worldMap(geo, data) {
         layer.setStyle({
             fillColor: 'grey',
             weight: 1,
-            color: 'black',
+            color: 'white',
             dashArray: '',
             fillOpacity: 0.5
         });
