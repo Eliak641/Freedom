@@ -15,25 +15,36 @@
             </div>
             <div class = "box" style = "height: 600px">
                 
-                <!--VÄNSTER-->
+                <!--VÄNSTER FÄLT-->
                 <div style = "background-color:gray; width: 70%; border: solid; border-color: black">
-                    <!--Karta-->
-                    <div id = "map" style = "width: 100%; height: 90%"; margin: 10px></div>
-                    <!--Barslider-->
-                    <div id= "sliderBar" style = "width: 90%; margin-left: 5%; margin-top: 20px;"></div>
+                    
+                    <!--KARTA-->
+                    <!--    ID:t 'mapContainer' används när vi skapar varaibeln 'map' i map.js. 
+                            Kallar indirekt på alla funktioner som skapar kartan.
+                    -->
+                    <div id = "mapContainer" style = "width: 100%; height: 90%"; margin: 10px></div>
+                    
+                    <!--BARS LIDER-->
+                    <!--ID:t 'sliderBarContainer' används på samma sätt som mapContainer -->
+                    <div id= "sliderBarContainer" style = "width: 90%; margin-left: 5%; margin-top: 20px;"></div>
+                
                 </div>
                 
-                <!--HÖGER-->
+                <!--HÖGER FÄLT-->
                 <div style = "width: 30%; border: solid; border-color: black">
+                    
                     <p id = "testText">Temp text</p>
                     <!--Legend? -->
                     <div style = "margin: 20px; height: 40%; border: solid; border-color: black"><p>temp legend</p></div>
                     <!-- Detaljinfo om de olika länderna-->
                     <div>
+                        
                         <!--Ev. plats för fler grafer-->
                         <div style ="margin: 20px; height: 40%; border: solid; border-color: black;">
                             <p>temp extra info</p>
+                        
                         </div>
+                    
                     </div>
                     
                 </div>
@@ -43,6 +54,7 @@
      
         
         
+        <!-- tror denna kod kom från bar-slidern, men den gjorde inget när jag tog bort den så låter den vara bortkommenterad tills vidare -->
         
         <!--<script type="text/javascript">(function(){window['__CF$cv$params']={r:'6ddeaabb7d0f95f0',m:'H8jjraIDFoyOaBbpUSkqa4C8Dbpgtly2_uASMZt5280-1644929478-0-AVoU+0kSmGX9PBp3IjAalFNHpsLtK2prbVfkUBKBS3q3SsCiF01PFWfIEp2Ehwkw4/czduhx7/Rel8XCjJURwEyptkeJOyq8nYmB1aLRI1JyZErmBnSpv6kMWFCxvw5F+zyXY8IvZY3wxNjUmuV2F5qfBM1nege9nJ/zKE0GbwqnB6wbElAv3h3MncX1meweSA==',s:[0x1e367c2782,0xdcaf6c87fa],}})();</script>-->
     

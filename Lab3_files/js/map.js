@@ -2,7 +2,38 @@
 //Skickar in geo (geoJSON-filen) och data (JSON-filen med all freedom-data)
 function worldMap(geo, data) {
 
+    
+    /****************************************************************/
+    /*                      SLIDER BAR-KODEN                        */
+    /* Behöver vara först pga att den används i kommande funktioner */
+    /****************************************************************/
+    
+    //sliderBar är HTML-divven
+    var sliderBar = document.getElementById('sliderBarContainer');
+    
+    //skapar ett slider-objekt i divven
+    noUiSlider.create(sliderBar, {
+        start: [1],         //Börjar till vänster när man öppnar sidan
+        connect: true,
+        range: {
+            'min': 2013,    //Vill egentligen plocka dessa värden från datasetet
+            'max': 2021
+        },
+        step: 1
+    });
+    
+    var sliderYear; //Ska användas längre ner för att jämföra med datasetet
+    
+    sliderBar.noUiSlider.on('change', function () {
+        sliderYear = parseInt(sliderBar.noUiSlider.get());
+        //Byter text i högerfältet för att se att slidern funkar
+        document.getElementById('testText').innerText = sliderYear;
+    });
 
+    /****************************************************************/
+    /*                           MAP-KODEN                          */
+    /****************************************************************/
+    
     // Creating map options
     var mapOptions = {
         center: [25, 5],
@@ -10,8 +41,8 @@ function worldMap(geo, data) {
     }
 
     // Creating a map object. Empty at first
-    //L is a leaflet libary
-    var map = new L.map('map', mapOptions);
+    //L is a leaflet libary, 'mapContainer' är ID:t på HTML-divven som kartan ska ligga i.
+    var map = new L.map('mapContainer', mapOptions);
 
     // Creating a Layer object
     // Lägger till all info som är på kartan från någon öppen karthemsida. Namn på länder osv 
@@ -26,8 +57,18 @@ function worldMap(geo, data) {
     // Adding layer to the previous empty map
      map.addLayer(layer);
     
-    //Funktion för att sätta färgerna. Kallas på i funktionen nedanför.
-    /* ARGUMENTEN: 
+    // Creating a World countries Layer with polygons from the geoJson file 
+    // Using leaflets geoJson API
+    var mapData = L.geoJson(geo, {
+         style: style,
+         onEachFeature: onEachFeature});
+    
+
+    // Adding polygon layer to map.
+    //Doesn't need to be up here (bc js...). But it makes for clearer code
+     map.addLayer(mapData);
+    
+    /* Funktion för att sätta färgerna. Kallas på i funktionen nedanför.
      * country = ADMIN från geoJSON
      * data (array) = datasetet från excelfilen
      * Båda dessa kommer från argumenten i map-funktionen
@@ -62,8 +103,7 @@ function worldMap(geo, data) {
      }
     
     
-    //gets called when you hover
-    //e är ett event. Var definerar man hover-funktionen??
+    //gets called when you hover. (Built in function?)
     function highlightFeature(e) {
     var layer = e.target;
         layer.setStyle({
@@ -84,7 +124,7 @@ function worldMap(geo, data) {
         mapData.resetStyle(e.target);
     }
     
-    
+    //Verkar använda bådehighlightFeature och resetHighlight, men har inga argument
     function onEachFeature(feature, layer) {
         layer.on({
             mouseover: highlightFeature,
@@ -92,85 +132,12 @@ function worldMap(geo, data) {
         });
     }   
     
-    // Creating a World countries Layer 
-     //leaflets geoJson API
-    //skickar in geo-data till geoJson API
-    var mapData = L.geoJson(geo, {
-         style: style,
-         onEachFeature: onEachFeature});
     
-
-     // Adding layer to map
-     map.addLayer(mapData);
-    
+    //Testar om man får ut året från JSON-filen
+    /*
     function getJsonYear(year){
         console.log(year);
         console.log("inne i getJsonYear");
-    };
-  
-    var sliderBar = document.getElementById('sliderBar');
-    noUiSlider.create(sliderBar, {
-    start: [1],
-    connect: true,
-    range: {
-        'min': 2013,
-        'max': 2021
-    },
-        step: 1
-});
-    
-    
-sliderBar.noUiSlider.on('change', function () {
-    getJsonYear(sliderBar.noUiSlider.get());
-    // skicka siffran till en funktion som hämtar ut data från json i det året? dvs går igenom hela json filen och kollar varje feature
-    console.log(sliderBar.noUiSlider.get());
-});
-    
+    };*/
 }
 
-/*
-function worldMap(data) {
-
-var map = new L.Map("mapid", {center: [10, 5], zoom: 2})
-    .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
-
-var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-    g = svg.append("g").attr("class", "leaflet-zoom-hide");
-
-  var transform = d3.geo.transform({point: projectPoint}),
-      path = d3.geo.path().projection(transform);
-
-  var feature = g.selectAll("path")
-      .data(collection.features)
-    .enter().append("path");
-
-  map.on("viewreset", reset);
-  reset();
-
-  // Reposition the SVG to cover the features.
-  function reset() {
-    var bounds = path.bounds(collection),
-        topLeft = bounds[0],
-        bottomRight = bounds[1];
-
-    svg .attr("width", bottomRight[0] - topLeft[0])
-        .attr("height", bottomRight[1] - topLeft[1])
-        .style("left", topLeft[0] + "px")
-        .style("top", topLeft[1] + "px");
-
-    g   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-
-    feature.attr("d", path);
-  }
-
-  // Use Leaflet to implement a D3 geometric transformation.
-  function projectPoint(x, y) {
-    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-    this.stream.point(point.x, point.y);
-  }
-
-
-}
-*/
-
-//Amandas testkommentar <3
