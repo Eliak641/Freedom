@@ -1,32 +1,37 @@
 
+//Skickar in geo (geoJSON-filen) och data (JSON-filen med all freedom-data)
 function worldMap(geo, data) {
-/* global noUiSlider*/
-// Creating map options
-     var mapOptions = {
+
+
+    // Creating map options
+    var mapOptions = {
         center: [25, 5],
         zoom: 2
-     }
+    }
 
-     // Creating a map object
-     //L is a leaflet libarie
-     
-     var map = new L.map('map', mapOptions);
+    // Creating a map object. Empty at first
+    //L is a leaflet libary
+    var map = new L.map('map', mapOptions);
 
-     // Creating a Layer object
-    var layer = new L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Creating a Layer object
+    // Lägger till all info som är på kartan från någon öppen karthemsida. Namn på länder osv 
+    var layer = new L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
+    {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> Contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-        maxZoom: 18
-     });
+        
+        //Hur mycket man ska kunna zooma. Stod på 18, sänkte till 11
+        maxZoom: 11
+    });
 
-     // Adding layer to map
+    // Adding layer to the previous empty map
      map.addLayer(layer);
     
-
-   // Get color for string country name
-    /* function getColor(country) {
-         
-          return country == 'Sweden' ? '#ff339c' : 'black';
-      }*/
+    //Funktion för att sätta färgerna. Kallas på i funktionen nedanför.
+    /* ARGUMENTEN: 
+     * country = ADMIN från geoJSON
+     * data (array) = datasetet från excelfilen
+     * Båda dessa kommer från argumenten i map-funktionen
+     */
       function getColor(country, data) {
          for(var i = 0; i < Object.keys(data).length; ++i) {
             if(data[i].Country == country && data[i].Status == 'PF' ){
@@ -41,7 +46,10 @@ function worldMap(geo, data) {
           
       }
 
-    //feature.properties.ADMIN,
+    //feature.properties.ADMIN
+    //Var används style och vad skickar man in?? Första gången feature och style nämns i koden
+    
+    //Körs funktionerna när de skapas?? Vad gör argumenten isf??
      function style(feature) {
         return {
            fillColor: getColor(feature.properties.ADMIN, data),
@@ -55,6 +63,7 @@ function worldMap(geo, data) {
     
     
     //gets called when you hover
+    //e är ett event. Var definerar man hover-funktionen??
     function highlightFeature(e) {
     var layer = e.target;
         layer.setStyle({
@@ -70,7 +79,7 @@ function worldMap(geo, data) {
         }
     }
     
-    //when not hovering, dont who highlight
+    //when not hovering, remove previous highlight
     function resetHighlight(e) {
         mapData.resetStyle(e.target);
     }
