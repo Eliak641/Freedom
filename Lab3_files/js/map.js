@@ -24,7 +24,8 @@ noUiSlider.create(sliderBar, {
     step: 1
 });
 
-//Så ritfunktionen kommer åt startvärdet innan vi ändrar bar:en
+//Används i färgväljaren. Måste därför bestämmas innan
+//Uppdateras senare längst ner i slider-eventet
 var sliderYear = parseInt(sliderBar.noUiSlider.get()); 
 
 
@@ -33,7 +34,7 @@ var sliderYear = parseInt(sliderBar.noUiSlider.get());
 /****************************************************************/
 //Skickar in geo (geoJSON-filen) och data (JSON-filen med all freedom-data)
 function worldMap(geo, master) {
-    
+
     // Creating map options
     var mapOptions = {
         center: [25, 5],
@@ -55,7 +56,7 @@ function worldMap(geo, master) {
     });
 
     // Adding layer to the previous empty map
-     map.addLayer(layer);
+    map.addLayer(layer);
 
     function getColor(country, master, sliderYear) {
         for(var i = 0; i < Object.keys(master).length; ++i) {
@@ -89,14 +90,14 @@ function worldMap(geo, master) {
         };
      }
     
-    // Using leaflets geoJson API to create polygons from geoJSON file
+    // Using leaflets geoJson API to create layer with polygons from geoJSON file
     var mapData = L.geoJson(geo, {
          style: style,
          onEachFeature: onEachFeature});
     
     map.addLayer(mapData);
 
-    //gets called when you hover. (Built in function?)
+    //Standard leaflet function. Gets called when you hover. (Built in function?)
     function highlightFeature(e) {
         var layer = e.target;
         layer.setStyle({
@@ -112,12 +113,13 @@ function worldMap(geo, master) {
         }
     }
     
-    //when not hovering, remove previous highlight
+    //Standard leaflet function. When not hovering, remove previous highlight.
     function resetHighlight(e) {
         mapData.resetStyle(e.target);
     }
     
-    //Verkar använda bådehighlightFeature och resetHighlight, men har inga argument
+    //Makes so that the hover function works for all polygons. 
+    //Used when creating mapData
     function onEachFeature(feature, layer) {
         layer.on({
             mouseover: highlightFeature,
@@ -125,21 +127,12 @@ function worldMap(geo, master) {
         });
     }  
     
-    
-    
-    //DET ÄR DEN HÄR FUNKTIONEN SOM INTE RIKTIGT FUNKAR ÄN!!
-    //Uppdaterar year-variabeln när man flyttar
+    //Event-funktion som triggas när man flyttar slidern
+    //Ändrar värde på sliderYear-variabeln
+    //Ritar om alla färgerna utifrån nytt år
     sliderBar.noUiSlider.on('change', function () {
         sliderYear = parseInt(sliderBar.noUiSlider.get()); //Ger en string
-
-        //LÄGG IN UPPDATERINGSKOD HÄR (FUNKAR EJ ÄN)
-        
-        map.eachLayer(function(layer){
-           if(layer instanceof mapData)
-               mapData.resetStyle(layer);
-        });
-        
+        mapData.setStyle(style);
     });
-    
 }
 
