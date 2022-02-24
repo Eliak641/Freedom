@@ -1,38 +1,38 @@
+/*
+    TODO:
+        - Plocka first/last-värden från datasetet
+        - Få färgen att upppdateras med baren
+        - Visa en liten label vid hover
+        - Fler grafer vid sidan av
+        - Highlighta vilken punk i andra grafen man är på
+        - Visa totala stats för året
+*/
+/****************************************************************/
+/*                      SLIDER BAR-KODEN                        */
+/****************************************************************/
+//sliderBar = HTML-divven
+var sliderBar = document.getElementById('sliderBarContainer');
 
+//skapar ett slider-objekt i divven
+noUiSlider.create(sliderBar, {
+    start: [1],         //Börjar till vänster när man öppnar sidan
+    connect: true,
+    range: {
+        'min': 2013,    //Vill egentligen plocka dessa värden från datasetet (ej prio tho)
+        'max': 2021
+    },
+    step: 1
+});
+
+//Så ritfunktionen kommer åt startvärdet innan vi ändrar bar:en
+var sliderYear = parseInt(sliderBar.noUiSlider.get()); 
+
+
+/****************************************************************/
+/*                           MAP-KODEN                          */
+/****************************************************************/
 //Skickar in geo (geoJSON-filen) och data (JSON-filen med all freedom-data)
-function worldMap(geo, data) {
-
-    
-    /****************************************************************/
-    /*                      SLIDER BAR-KODEN                        */
-    /* Behöver vara först pga att den används i kommande funktioner */
-    /****************************************************************/
-    
-    //sliderBar är HTML-divven
-    var sliderBar = document.getElementById('sliderBarContainer');
-    
-    //skapar ett slider-objekt i divven
-    noUiSlider.create(sliderBar, {
-        start: [1],         //Börjar till vänster när man öppnar sidan
-        connect: true,
-        range: {
-            'min': 2013,    //Vill egentligen plocka dessa värden från datasetet
-            'max': 2021
-        },
-        step: 1
-    });
-    
-    var sliderYear; //Ska användas längre ner för att jämföra med datasetet
-    
-    sliderBar.noUiSlider.on('change', function () {
-        sliderYear = parseInt(sliderBar.noUiSlider.get());
-        //Byter text i högerfältet för att se att slidern funkar
-        document.getElementById('testText').innerText = sliderYear;
-    });
-
-    /****************************************************************/
-    /*                           MAP-KODEN                          */
-    /****************************************************************/
+function worldMap(geo, master) {
     
     // Creating map options
     var mapOptions = {
@@ -56,56 +56,49 @@ function worldMap(geo, data) {
 
     // Adding layer to the previous empty map
      map.addLayer(layer);
+
+    function getColor(country, master, sliderYear) {
+        for(var i = 0; i < Object.keys(master).length; ++i) {
+            if(master[i].YEAR == sliderYear){
+                var tempObj = master[i].properties; 
+
+                for(var k = 0; k < Object.keys(tempObj).length; ++k) {
+                    if(tempObj[k].Country == country && tempObj[k].Status == 'PF' ){
+                        return tempObj[k].Country == country ? '#ffcc99': '#ff9633';
+                    }
+                    else if(tempObj[k].Country == country && tempObj[k].Status == 'NF' ){
+                        return tempObj[k].Country == country ? '#ff4d88': '#ff9633';
+                    }
+                    else if(tempObj[k].Country == country && tempObj[k].Status == 'F' ){
+                        return tempObj[k].Country == country ? '#b3ffb3': '#ff9633';
+                    }
+                }
+            }
+        }
+    }
+    //feature.properties.ADMIN
+    //Körs funktionerna när de skapas?? Vad gör argumenten isf??
+     function style(feature) {
+        return {
+            fillColor: getColor(feature.properties.ADMIN, master, sliderYear),
+            weight: 2,
+            opacity: 0.5,
+            color: 'black',
+            dashArray: '1',
+            fillOpacity: 1
+        };
+     }
     
-    // Creating a World countries Layer with polygons from the geoJson file 
-    // Using leaflets geoJson API
+    // Using leaflets geoJson API to create polygons from geoJSON file
     var mapData = L.geoJson(geo, {
          style: style,
          onEachFeature: onEachFeature});
     
+    map.addLayer(mapData);
 
-    // Adding polygon layer to map.
-    //Doesn't need to be up here (bc js...). But it makes for clearer code
-     map.addLayer(mapData);
-    
-    /* Funktion för att sätta färgerna. Kallas på i funktionen nedanför.
-     * country = ADMIN från geoJSON
-     * data (array) = datasetet från excelfilen
-     * Båda dessa kommer från argumenten i map-funktionen
-     */
-      function getColor(country, data) {
-         for(var i = 0; i < Object.keys(data).length; ++i) {
-            if(data[i].Country == country && data[i].Status == 'PF' ){
-                 return data[i].Country == country ? '#ffcc99': '#ff9633';
-            }
-             else if(data[i].Country == country && data[i].Status == 'NF' ){
-                 return data[i].Country == country ? '#ff4d88': '#ff9633';
-             }
-             else if(data[i].Country == country && data[i].Status == 'F' )
-                 return data[i].Country == country ? '#b3ffb3': '#ff9633';
-         }
-          
-      }
-
-    //feature.properties.ADMIN
-    //Var används style och vad skickar man in?? Första gången feature och style nämns i koden
-    
-    //Körs funktionerna när de skapas?? Vad gör argumenten isf??
-     function style(feature) {
-        return {
-           fillColor: getColor(feature.properties.ADMIN, data),
-           weight: 2,
-           opacity: 0.5,
-           color: 'black',
-           dashArray: '1',
-           fillOpacity: 0.7
-        };
-     }
-    
-    
     //gets called when you hover. (Built in function?)
     function highlightFeature(e) {
-    var layer = e.target;
+        var layer = e.target;
         layer.setStyle({
             fillColor: 'grey',
             weight: 1,
@@ -128,16 +121,25 @@ function worldMap(geo, data) {
     function onEachFeature(feature, layer) {
         layer.on({
             mouseover: highlightFeature,
-            mouseout: resetHighlight,
+            mouseout: resetHighlight
         });
-    }   
+    }  
     
     
-    //Testar om man får ut året från JSON-filen
-    /*
-    function getJsonYear(year){
-        console.log(year);
-        console.log("inne i getJsonYear");
-    };*/
+    
+    //DET ÄR DEN HÄR FUNKTIONEN SOM INTE RIKTIGT FUNKAR ÄN!!
+    //Uppdaterar year-variabeln när man flyttar
+    sliderBar.noUiSlider.on('change', function () {
+        sliderYear = parseInt(sliderBar.noUiSlider.get()); //Ger en string
+
+        //LÄGG IN UPPDATERINGSKOD HÄR (FUNKAR EJ ÄN)
+        
+        map.eachLayer(function(layer){
+           if(layer instanceof mapData)
+               mapData.resetStyle(layer);
+        });
+        
+    });
+    
 }
 
