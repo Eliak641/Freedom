@@ -1,66 +1,111 @@
+/*
+    TODO:
+        - Plocka first/last-värden från datasetet
+        - Få färgen att upppdateras med baren
+        - Visa en liten label vid hover
+        - Fler grafer vid sidan av
+        - Highlighta vilken punk i andra grafen man är på
+        - Visa totala stats för året
+*/
+/****************************************************************/
+/*                      SLIDER BAR-KODEN                        */
+/****************************************************************/
+//sliderBar = HTML-divven
+var sliderBar = document.getElementById('sliderBarContainer');
 
-function worldMap(geo, data) {
-/* global noUiSlider*/
-// Creating map options
-     var mapOptions = {
+//skapar ett slider-objekt i divven
+noUiSlider.create(sliderBar, {
+    start: [1],         //Börjar till vänster när man öppnar sidan
+	tooltips: true,
+    //connect: true,
+    range: {
+        'min': 2013,    //Vill egentligen plocka dessa värden från datasetet (ej prio tho)
+        'max': 2021
+    },
+    step: 1,
+	format: wNumb( { decimals: 0 })
+});
+
+//Används i färgväljaren. Måste därför bestämmas innan
+//Uppdateras senare längst ner i slider-eventet
+var sliderYear = parseInt(sliderBar.noUiSlider.get()); 
+
+
+/****************************************************************/
+/*                           MAP-KODEN                          */
+/****************************************************************/
+//Skickar in geo (geoJSON-filen) och data (JSON-filen med all freedom-data)
+function worldMap(geo, master) {
+
+    // Creating map options
+    var mapOptions = {
         center: [25, 5],
         zoom: 2
-     }
+    }
 
-     // Creating a map object
-     //L is a leaflet libarie
-     
-     var map = new L.map('map', mapOptions);
+    // Creating a map object. Empty at first
+    //L is a leaflet libary, 'mapContainer' är ID:t på HTML-divven som kartan ska ligga i.
+    var map = new L.map('mapContainer', mapOptions);
 
-     // Creating a Layer object
-    var layer = new L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Creating a Layer object
+    // Lägger till all info som är på kartan från någon öppen karthemsida. Namn på länder osv 
+    var layer = new L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
+    {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> Contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-        maxZoom: 18
-     });
+        
+        //Hur mycket man ska kunna zooma. Stod på 18, sänkte till 11
+        maxZoom: 11
+    });
 
-     // Adding layer to map
-     map.addLayer(layer);
-    
+    // Adding layer to the previous empty map
+    map.addLayer(layer);
 
-   // Get color for string country name
-    /* function getColor(country) {
-         
-          return country == 'Sweden' ? '#ff339c' : 'black';
-      }*/
-      function getColor(country, data) {
-         for(var i = 0; i < Object.keys(data).length; ++i) {
-            if(data[i].Country == country && data[i].Status == 'PF' ){
-                 return data[i].Country == country ? 'green': '#ff9633';
+    function getColor(country, master, sliderYear) {
+        for(var i = 0; i < Object.keys(master).length; ++i) {
+            if(master[i].YEAR == sliderYear){
+                var tempObj = master[i].properties; 
+
+                for(var k = 0; k < Object.keys(tempObj).length; ++k) {
+                    if(tempObj[k].Country == country && tempObj[k].Status == 'PF' ){
+                        return tempObj[k].Country == country ? '#ffcc99': '#ff9633';
+                    }
+                    else if(tempObj[k].Country == country && tempObj[k].Status == 'NF' ){
+                        return tempObj[k].Country == country ? '#ff4d88': '#ff9633';
+                    }
+                    else if(tempObj[k].Country == country && tempObj[k].Status == 'F' ){
+                        return tempObj[k].Country == country ? '#b3ffb3': '#ff9633';
+                    }
+                }
             }
-             else if(data[i].Country == country && data[i].Status == 'NF' ){
-                 return data[i].Country == country ? 'purple': '#ff9633';
-             }
-             else if(data[i].Country == country && data[i].Status == 'F' )
-                 return data[i].Country == country ? 'yellow': '#ff9633';
-         }
-          
-      }
-
-    //feature.properties.ADMIN,
+        }
+    }
+    //feature.properties.ADMIN
+    //Körs funktionerna när de skapas?? Vad gör argumenten isf??
      function style(feature) {
         return {
-           fillColor: getColor(feature.properties.ADMIN, data),
-           weight: 2,
-           opacity: 0.5,
-           color: 'white',
-           dashArray: '1',
-           fillOpacity: 0.7
+            fillColor: getColor(feature.properties.ADMIN, master, sliderYear),
+            weight: 2,
+            opacity: 0.5,
+            color: 'black',
+            dashArray: '1',
+            fillOpacity: 1
         };
      }
     
+    // Using leaflets geoJson API to create layer with polygons from geoJSON file
+    var mapData = L.geoJson(geo, {
+         style: style,
+         onEachFeature: onEachFeature});
     
-    //gets called when you hover
+    map.addLayer(mapData);
+
+    //Standard leaflet function. Gets called when you hover. (Built in function?)
     function highlightFeature(e) {
-    var layer = e.target;
+        var layer = e.target;
         layer.setStyle({
             fillColor: 'grey',
             weight: 1,
-            color: 'black',
+            color: 'white',
             dashArray: '',
             fillOpacity: 0.5
         });
@@ -70,96 +115,26 @@ function worldMap(geo, data) {
         }
     }
     
-    //when not hovering, dont who highlight
+    //Standard leaflet function. When not hovering, remove previous highlight.
     function resetHighlight(e) {
         mapData.resetStyle(e.target);
     }
     
-    
+    //Makes so that the hover function works for all polygons. 
+    //Used when creating mapData
     function onEachFeature(feature, layer) {
         layer.on({
             mouseover: highlightFeature,
-            mouseout: resetHighlight,
+            mouseout: resetHighlight
         });
-    }   
+    }  
     
-    // Creating a World countries Layer 
-     //leaflets geoJson API
-    //skickar in geo-data till geoJson API
-    var mapData = L.geoJson(geo, {
-         style: style,
-         onEachFeature: onEachFeature});
-    
-
-     // Adding layer to map
-     map.addLayer(mapData);
-    
-    function getJsonYear(year){
-        console.log(year);
-        console.log("inne i getJsonYear");
-    };
-  
-    var sliderBar = document.getElementById('sliderBar');
-    noUiSlider.create(sliderBar, {
-    start: [1],
-    connect: true,
-    range: {
-        'min': 2013,
-        'max': 2021
-    },
-        step: 1
-});
-    
-    
-sliderBar.noUiSlider.on('change', function () {
-    getJsonYear(sliderBar.noUiSlider.get());
-    // skicka siffran till en funktion som hämtar ut data från json i det året? dvs går igenom hela json filen och kollar varje feature
-    console.log(sliderBar.noUiSlider.get());
-});
-    
+    //Event-funktion som triggas när man flyttar slidern
+    //Ändrar värde på sliderYear-variabeln
+    //Ritar om alla färgerna utifrån nytt år
+    sliderBar.noUiSlider.on('change', function () {
+        sliderYear = parseInt(sliderBar.noUiSlider.get()); //Ger en string
+        mapData.setStyle(style);
+    });
 }
 
-/*
-function worldMap(data) {
-
-var map = new L.Map("mapid", {center: [10, 5], zoom: 2})
-    .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
-
-var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-    g = svg.append("g").attr("class", "leaflet-zoom-hide");
-
-  var transform = d3.geo.transform({point: projectPoint}),
-      path = d3.geo.path().projection(transform);
-
-  var feature = g.selectAll("path")
-      .data(collection.features)
-    .enter().append("path");
-
-  map.on("viewreset", reset);
-  reset();
-
-  // Reposition the SVG to cover the features.
-  function reset() {
-    var bounds = path.bounds(collection),
-        topLeft = bounds[0],
-        bottomRight = bounds[1];
-
-    svg .attr("width", bottomRight[0] - topLeft[0])
-        .attr("height", bottomRight[1] - topLeft[1])
-        .style("left", topLeft[0] + "px")
-        .style("top", topLeft[1] + "px");
-
-    g   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-
-    feature.attr("d", path);
-  }
-
-  // Use Leaflet to implement a D3 geometric transformation.
-  function projectPoint(x, y) {
-    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-    this.stream.point(point.x, point.y);
-  }
-
-
-}
-*/

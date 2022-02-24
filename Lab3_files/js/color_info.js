@@ -1,12 +1,12 @@
 /**
  *
-    Author: Kahin Akram
-    Date: Jan 24, 2020
-    TNM048 Lab 1 - Visual Information-Seeking Mantra
-    Color information file
+    VI ANVÄNDER INTE DEN HÄR KODEN!
+    MEN KAN VARA BRA ATT HA OM VI SKA LÄGGA TILL YTTERLIGARE GRAFER
+    LÅT VARA KOMMENTERAD TILLS VIDARE SÅ VI VET ATT DEN INTE ANVÄNDS. 
  *
 */
 
+/*
 //We first have to create a dataset for the circules with some information
 var circleData = [
     { "cx": 30, "cy": 30, "radius": 12, "color": "#4d4d4d", "text": "No Data available" },
@@ -53,3 +53,4 @@ var textLabels = text
     .attr("font-family", "sans-serif")
     .attr("font-size", "14px")
     .attr("fill", "black");
+*/
