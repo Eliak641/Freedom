@@ -3,8 +3,8 @@
 /* Läser in datan och printar åren i testText2-divven                   */
 /* Printar sedan ut alla länderna från första året i testText3-divven   */
 /************************************************************************/
-
-/*function printYears(data){
+/*
+function printYears(data){
     
     //Printar år
     var myText = '';
