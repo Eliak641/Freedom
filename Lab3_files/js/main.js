@@ -7,6 +7,7 @@ d3.json("./data/geoData.geojson", function (data) {
 */
 
 var world_map
+var year
 
 //d3.csv("./data/oneYearAgg.csv", function(data) {
 d3.json("./data/oneYearAgg.json", function (data) {  
@@ -14,8 +15,9 @@ d3.json("./data/oneYearAgg.json", function (data) {
     d3.json("./data/geoData.geojson", function (geo) {
         
        // world_map = new worldMap(geo, data);
-        
+      
         world_map = new worldMap(geo, data);
+        
         //TESTAR geo
         //console.log(geo.features) 
         //console.log(geo.features[0])
