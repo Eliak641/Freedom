@@ -22,8 +22,10 @@
 		
 <div class="row">
 	
+	
 	<!--- MAP + SLIDER (RIGHT SIDE) ------>
 	<div class="card border-light mb-3">
+		
 <div class="card-body " style=" width: 60rem; height: 35rem;" >
 
 	<!--    ID:t 'mapContainer' används när vi skapar varaibeln 'map' i map.js. 
@@ -40,19 +42,28 @@
 	
 		<!-- INFORMATION (LEFT SIDE) --->
 		
-	<div class="card-body" style="width: 20rem; height: 3rem;"  >
-		<div class = "card border-light mb-3">
-			<p>Map visualization of the freedom index developed by the organization 'Freedom house'.</p>
-		</div>
+<!--	<div class="card text-center" style="width: 20rem; height: 3rem;" >-->
+<!--	<div class="card-body" style="width: 20rem; height: 1rem;"  >-->
+		<div  class="card" style="width: 28rem; padding-left: 5rem; padding-right: 5rem;">
+		
+            <div class="col-sm card text-center" id="color-info">
+             	<br>
+					<h5><strong>Color representation </strong></h5>
+                 <hr>
+             </div>
+			
+
 	
-	<div class = "card border-light mb-3">
+	<div class="col-sm card text-center" style = "boxWidth: 10 "  id="color-info">
+             	<br>
+					<h5><strong>Color representation </strong></h5>
+                 <hr>
+             </div>
 		
-			<p>Map visualization of the freedom index developed by the organization 'Freedom house'.</p>
-	</div>
-		
+<!--		</div>-->
 	</div>
 
-		</div>
+	
         
 
      
@@ -85,6 +96,7 @@
   
     <!-- EGNA SCRIPTS/FILER -->
     <script src="js/map.js"></script>
+	<script src="js/color_info.js"></script>
     <script src="js/main.js"></script>
     <script src="js/slider.js"></script>
 

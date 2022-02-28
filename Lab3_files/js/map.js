@@ -136,5 +136,8 @@ function worldMap(geo, master) {
         sliderYear = parseInt(sliderBar.noUiSlider.get()); //Ger en string
         mapData.setStyle(style);
     });
+	
+	
+	
 }
 
